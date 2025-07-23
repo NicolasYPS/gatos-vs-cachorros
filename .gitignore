@@ -1,3 +1,70 @@
+# ===================================
+# Ambientes virtuais
+# ===================================
 venv/
+env/
+envs/
+__pypackages__/
+.python-version
+
+# ===================================
+# Python
+# ===================================
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ===================================
+# Modelos de Machine Learning
+# ===================================
+# Modelos Keras/TensorFlow
+*.h5
+*.hdf5
+*.keras
+saved_model/
+
+# Modelos PyTorch (se usar)
+*.pth
+*.pt
+*.ckpt
+
+# ===================================
+# Sistema operacional
+# ===================================
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+
+# ===================================
+# Logs e arquivos temporários
+# ===================================
+*.log
+*.tmp
+*.temp
+logs/
+output/
+tmp/
+
+# ===================================
+# Variáveis de ambiente
+# ===================================
+.env
+.env.local
+.env.backup
+
+# ===================================
+# IDEs e editores
+# ===================================
+.vscode/
+.idea/
+*.swp
+*.swo
