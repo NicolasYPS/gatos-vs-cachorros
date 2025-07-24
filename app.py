@@ -38,7 +38,7 @@ def selecionar_imagem():
 # Cria a janela
 root = tk.Tk()
 root.title("🐱🐶 Gato ou Cachorro")
-root.geometry("400x500")  # aumentei altura para caber imagem
+root.geometry("400x500")  
 root.resizable(False, False)
 root.configure(bg="white")
 
