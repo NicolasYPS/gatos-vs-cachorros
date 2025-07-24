@@ -41,7 +41,7 @@ def classificar_imagem(caminho, model, label_resultado, panel):
             confianca = torch.nn.functional.softmax(output, dim=1)[0][classe].item() * 100
 
         # Atualizar GUI
-        resultado = f"{'🐶 CACHORRO' if classe == 0 else '🐱 GATO'} (confiança: {confianca:.2f}%)"
+        resultado = f"{'🐱 GATO' if classe == 0 else '🐶 CACHORRO'} (confiança: {confianca:.2f}%)"
         label_resultado.config(text=resultado)
 
         # Redimensionar para exibir
