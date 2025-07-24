@@ -60,7 +60,7 @@ def classify_image(image_path):
         confidence, predicted = torch.max(probabilities, 0)
 
     # Mapeia rótulos
-    classes = ["Gato", "Cachorro"]
+    classes = ["CACHORRO", "GATO"]
     label = classes[predicted.item()]
     confidence_percent = confidence.item() * 100
 
