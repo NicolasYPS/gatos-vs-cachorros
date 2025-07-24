@@ -1,3 +1,4 @@
+# app.py
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
@@ -41,7 +42,7 @@ def classificar_imagem(caminho, model, label_resultado, panel):
             confianca = torch.nn.functional.softmax(output, dim=1)[0][classe].item() * 100
 
         # Atualizar GUI
-        resultado = f"{'🐶 CACHORRO' if classe == 0 else '🐱 GATO'} (confiança: {confianca:.2f}%)"
+        resultado = f"{'🐶 CACHORRO' if classe == 1 else '🐱 GATO'} (confiança: {confianca:.2f}%)"
         label_resultado.config(text=resultado)
 
         # Redimensionar para exibir
@@ -62,6 +63,10 @@ def selecionar_imagem(model, label_resultado, panel):
     if caminho:
         classificar_imagem(caminho, model, label_resultado, panel)
 
+# Função para sair da aplicação
+def sair(root):
+    root.destroy()
+
 # GUI principal
 def main():
     # Carregar modelo
@@ -72,26 +77,46 @@ def main():
     # Criar janela
     root = tk.Tk()
     root.title("🐾 Gato vs Cachorro")
-    root.geometry("600x400")
+    root.geometry("600x450")
     root.resizable(False, False)
     root.configure(bg="white")
 
+    # Título
+    tk.Label(root, text="Classificador de Gatos e Cachorros", font=("Arial", 16, "bold"), bg="white").pack(pady=10)
+
     # Label para resultado
-    label_resultado = tk.Label(root, text="Escolha uma imagem", font=("Arial", 14), bg="white")
+    label_resultado = tk.Label(root, text="Escolha uma imagem", font=("Arial", 14), bg="white", fg="gray")
     label_resultado.pack(pady=10)
 
     # Painel para imagem
-    panel = tk.Label(root, bg="white")
-    panel.pack()
+    panel = tk.Label(root, bg="white", relief="sunken", width=300, height=300)
+    panel.pack(pady=10)
+
+    # Frame para botões
+    frame_botoes = tk.Frame(root, bg="white")
+    frame_botoes.pack(pady=10)
 
     # Botão para carregar imagem
-    btn = tk.Button(
-        root,
+    btn_carregar = tk.Button(
+        frame_botoes,
         text="📁 Carregar Imagem",
         font=("Arial", 12),
+        bg="#4CAF50",
+        fg="white",
         command=lambda: selecionar_imagem(model, label_resultado, panel)
     )
-    btn.pack(pady=10)
+    btn_carregar.pack(side="left", padx=5)
+
+    # Botão para sair
+    btn_sair = tk.Button(
+        frame_botoes,
+        text="🚪 Sair",
+        font=("Arial", 12),
+        bg="#f44336",
+        fg="white",
+        command=lambda: sair(root)
+    )
+    btn_sair.pack(side="left", padx=5)
 
     # Rodar GUI
     root.mainloop()
