@@ -37,11 +37,40 @@ Este projeto é um classificador binário de imagens que distingue entre fotos d
 - Matplotlib (para visualização)
 - Pillow (PIL)
 
-Instale as dependências com:
+## ▶️ Como usar (passo a passo)
+
+Siga esses passos para rodar o sistema:
+
+### 1. Clone o repositório
+```bash
+git clone https://github.com/NicolasYPS/gatos-vs-cachorros.git
+cd gatos-vs-cachorros
+```
+### 2. Crie o ambiente virtual
+```bash
+python -m venv venv
+```
+### 3. Ative o ambiente virtual
+
+* Linux
+
+```bash
+source venv/bin/activate
+```
+* Windows
+
+```bash
+venv/Scripts/activate
+```
+
+
+### 4. Instale as dependências com:
 
 ```bash
 pip install -r requirements.txt
 ```
+
+
 
 
 ## Autor
