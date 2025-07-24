@@ -1,125 +1,77 @@
 # app.py
-import torch
-import torch.nn as nn
-from torchvision import models, transforms
-from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import filedialog, messagebox
-import os
+from PIL import Image, ImageTk  # <-- Adiciona isso
+from predict import classify_image
 
-# Carregar modelo treinado
-def carregar_modelo():
-    try:
-        model = models.inception_v3(pretrained=False, aux_logits=False)
-        model.fc = nn.Linear(model.fc.in_features, 2)  # 2 classes: gato e cachorro
-        model.load_state_dict(torch.load("models/melhor_modelo_inceptionv3.pth", map_location="cpu"))
-        model.eval()
-        return model
-    except Exception as e:
-        messagebox.showerror("Erro", f"❌ Falha ao carregar o modelo: {e}")
-        return None
+# Variáveis globais para a imagem
+imagem_label = None
+imagem_tk = None
 
-# Transformações
-transform = transforms.Compose([
-    transforms.Resize((299, 299)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-])
+# Função chamada ao clicar em "Carregar Imagem"
+def selecionar_imagem():
+    global imagem_label, imagem_tk
 
-# Função para classificação
-def classificar_imagem(caminho, model, label_resultado, panel):
-    try:
-        # Carregar e transformar imagem
-        image = Image.open(caminho).convert("RGB")
-        image.thumbnail((300, 300))  # Reduzir para exibir na GUI
-        img = transform(image).unsqueeze(0).to("cpu")
-
-        # Previsão
-        with torch.no_grad():
-            output = model(img)
-            _, predicted = torch.max(output, 1)
-            classe = predicted.item()
-            confianca = torch.nn.functional.softmax(output, dim=1)[0][classe].item() * 100
-
-        # Atualizar GUI
-        resultado = f"{'🐶 CACHORRO' if classe == 1 else '🐱 GATO'} (confiança: {confianca:.2f}%)"
-        label_resultado.config(text=resultado)
-
-        # Redimensionar para exibir
-        display_img = Image.open(caminho).convert("RGB")
-        display_img.thumbnail((300, 300))
-        img_tk = ImageTk.PhotoImage(display_img)
-        panel.configure(image=img_tk)
-        panel.image = img_tk  # evitar coleta de lixo
-    except Exception as e:
-        label_resultado.config(text=f"❌ Erro: {e}")
-
-# Função para selecionar imagem
-def selecionar_imagem(model, label_resultado, panel):
     caminho = filedialog.askopenfilename(
         title="Selecione uma imagem",
-        filetypes=[("Imagens", "*.jpg *.jpeg *.png *.bmp *.webp")]
+        filetypes=[("Imagens", "*.jpg *.jpeg *.png *.bmp")]
     )
     if caminho:
-        classificar_imagem(caminho, model, label_resultado, panel)
+        resultado = classify_image(caminho)
+        if "error" in resultado:
+            messagebox.showerror("Erro", resultado["error"])
+        else:
+            resultado_var.set(f"{resultado['label']}\n({resultado['confidence']:.1f}%)")
 
-# Função para sair da aplicação
-def sair(root):
-    root.destroy()
+            # Exibe a imagem
+            imagem = Image.open(caminho)
+            imagem = imagem.resize((200, 200))  # Redimensiona para caber
+            imagem_tk = ImageTk.PhotoImage(imagem)
 
-# GUI principal
-def main():
-    # Carregar modelo
-    model = carregar_modelo()
-    if not model:
-        return
+            if imagem_label is None:
+                imagem_label = tk.Label(root, image=imagem_tk, bg="white")
+                imagem_label.pack(pady=10)
+            else:
+                imagem_label.configure(image=imagem_tk)
+                imagem_label.image = imagem_tk  # Mantém referência
 
-    # Criar janela
-    root = tk.Tk()
-    root.title("🐾 Gato vs Cachorro")
-    root.geometry("600x500")  # Aumentado para acomodar tudo
-    root.resizable(False, False)
-    root.configure(bg="white")
+# Cria a janela
+root = tk.Tk()
+root.title("🐱🐶 Gato ou Cachorro")
+root.geometry("400x500")  # aumentei altura para caber imagem
+root.resizable(False, False)
+root.configure(bg="white")
 
-    # Título
-    tk.Label(root, text="Classificador de Gatos e Cachorros", font=("Arial", 16, "bold"), bg="white").pack(pady=10)
+# Título
+tk.Label(root, text="Classificador de Imagens", font=("Arial", 16, "bold"), bg="white").pack(pady=20)
 
-    # Label para resultado
-    label_resultado = tk.Label(root, text="Escolha uma imagem", font=("Arial", 14), bg="white", fg="gray")
-    label_resultado.pack(pady=10)
+# Resultado
+resultado_var = tk.StringVar(value="Escolha uma imagem")
+tk.Label(root, textvariable=resultado_var, font=("Arial", 16), bg="white", fg="black").pack(pady=10)
 
-    # Painel para imagem (com tamanho fixo)
-    panel = tk.Label(root, bg="lightgray", relief="sunken", width=300, height=300)
-    panel.pack(pady=10, padx=20, fill="none")  # fill="none" evita expansão
+# Botões
+frame_botoes = tk.Frame(root, bg="white")
+frame_botoes.pack(pady=20)
 
-    # Frame para botões (centralizado)
-    frame_botoes = tk.Frame(root, bg="white")
-    frame_botoes.pack(pady=20)
+tk.Button(
+    frame_botoes,
+    text="📁 Carregar Imagem",
+    font=("Arial", 12),
+    bg="#4CAF50",
+    fg="white",
+    width=15,
+    command=selecionar_imagem
+).pack(side="left", padx=10)
 
-    # Botão para carregar imagem
-    btn_carregar = tk.Button(
-        frame_botoes,
-        text="📁 Carregar Imagem",
-        font=("Arial", 12),
-        bg="#4CAF50",
-        fg="white",
-        command=lambda: selecionar_imagem(model, label_resultado, panel)
-    )
-    btn_carregar.pack(side="left", padx=10)
+tk.Button(
+    frame_botoes,
+    text="🚪 Sair",
+    font=("Arial", 12),
+    bg="#f44336",
+    fg="white",
+    width=10,
+    command=root.destroy
+).pack(side="left", padx=10)
 
-    # Botão para sair
-    btn_sair = tk.Button(
-        frame_botoes,
-        text="🚪 Sair",
-        font=("Arial", 12),
-        bg="#f44336",
-        fg="white",
-        command=lambda: sair(root)
-    )
-    btn_sair.pack(side="left", padx=10)
-
-    # Rodar GUI
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
+# Inicia a GUI
+root.mainloop()
