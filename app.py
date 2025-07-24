@@ -1,7 +1,7 @@
 # app.py
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from PIL import Image, ImageTk  # <-- Adiciona isso
+from PIL import Image, ImageTk  
 from predict import classify_image
 
 # Variáveis globais para a imagem
