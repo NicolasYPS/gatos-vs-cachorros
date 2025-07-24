@@ -11,7 +11,7 @@ def carregar_modelo():
     try:
         model = models.inception_v3(pretrained=False, aux_logits=False)
         model.fc = nn.Linear(model.fc.in_features, 2)  # 2 classes: gato e cachorro
-        model.load_state_dict(torch.load("melhor_modelo_inceptionv3.pth", map_location="cpu"))
+        model.load_state_dict(torch.load("models/melhor_modelo_inceptionv3.pth", map_location="cpu"))
         model.eval()
         return model
     except Exception as e:
@@ -41,7 +41,7 @@ def classificar_imagem(caminho, model, label_resultado, panel):
             confianca = torch.nn.functional.softmax(output, dim=1)[0][classe].item() * 100
 
         # Atualizar GUI
-        resultado = f"{'🐱 GATO' if classe == 0 else '🐶 CACHORRO'} (confiança: {confianca:.2f}%)"
+        resultado = f"{'🐶 CACHORRO' if classe == 0 else '🐱 GATO'} (confiança: {confianca:.2f}%)"
         label_resultado.config(text=resultado)
 
         # Redimensionar para exibir
