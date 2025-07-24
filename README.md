@@ -69,7 +69,11 @@ venv/Scripts/activate
 ```bash
 pip install -r requirements.txt
 ```
+### 5. Execute o sistema
 
+```bash
+python run.py
+```
 
 
 
