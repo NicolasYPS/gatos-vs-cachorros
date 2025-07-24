@@ -77,7 +77,7 @@ def main():
     # Criar janela
     root = tk.Tk()
     root.title("🐾 Gato vs Cachorro")
-    root.geometry("600x450")
+    root.geometry("600x500")  # Aumentado para acomodar tudo
     root.resizable(False, False)
     root.configure(bg="white")
 
@@ -88,13 +88,13 @@ def main():
     label_resultado = tk.Label(root, text="Escolha uma imagem", font=("Arial", 14), bg="white", fg="gray")
     label_resultado.pack(pady=10)
 
-    # Painel para imagem
-    panel = tk.Label(root, bg="white", relief="sunken", width=300, height=300)
-    panel.pack(pady=10)
+    # Painel para imagem (com tamanho fixo)
+    panel = tk.Label(root, bg="lightgray", relief="sunken", width=300, height=300)
+    panel.pack(pady=10, padx=20, fill="none")  # fill="none" evita expansão
 
-    # Frame para botões
+    # Frame para botões (centralizado)
     frame_botoes = tk.Frame(root, bg="white")
-    frame_botoes.pack(pady=10)
+    frame_botoes.pack(pady=20)
 
     # Botão para carregar imagem
     btn_carregar = tk.Button(
@@ -105,7 +105,7 @@ def main():
         fg="white",
         command=lambda: selecionar_imagem(model, label_resultado, panel)
     )
-    btn_carregar.pack(side="left", padx=5)
+    btn_carregar.pack(side="left", padx=10)
 
     # Botão para sair
     btn_sair = tk.Button(
@@ -116,7 +116,7 @@ def main():
         fg="white",
         command=lambda: sair(root)
     )
-    btn_sair.pack(side="left", padx=5)
+    btn_sair.pack(side="left", padx=10)
 
     # Rodar GUI
     root.mainloop()

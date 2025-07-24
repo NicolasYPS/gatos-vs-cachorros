@@ -7,7 +7,7 @@ def main():
     print("🚀 Iniciando o sistema de classificação Gato vs Cachorro...\n")
 
     # Caminho da imagem de teste
-    image_path = "exemplos/gatos.jpeg"
+    image_path = "exemplos/gato.jpeg"
 
     # 1. Executa o predict.py com a imagem
     print(f"1️⃣ Executando classificação da imagem: {image_path}")
